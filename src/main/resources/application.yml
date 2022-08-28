@@ -1,0 +1,12 @@
+server:
+  servlet:
+    context-path: "/activeAlert/manager"
+
+
+#logging:
+#  level:
+#    reactor:
+#      netty:
+#        http:
+#          client:
+#            HttpClient: DEBUG
