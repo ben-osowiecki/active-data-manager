@@ -2,6 +2,7 @@ package com.benosowiecki.activedatamanager.client;
 
 import com.benosowiecki.activedatamanager.domain.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -12,16 +13,20 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class ActiveAlertClient {
 
-    private final WebClient webClient;
+    @Qualifier("activeAlertWebClient")
+    private final WebClient activeAlertWebClient;
+
+    @Qualifier("activeAlertAuthWebClient")
+    private final WebClient activeAlertAuthWebClient;
 
     private final ParameterizedTypeReference<ActiveAlertResponse<AlertIdentifierList>> responseAlertSummaryListTypeReference = new ParameterizedTypeReference<>() {};
     private final ParameterizedTypeReference<ActiveAlertResponse<Alert>> responseAlertTypeReference = new ParameterizedTypeReference<>() {};
     private final ParameterizedTypeReference<ActiveAlertResponse<Device>> responseDeviceTypeReference = new ParameterizedTypeReference<>() {};
 
     public ActiveAlertResponse<AlertIdentifierList> getAlertIdentifiers(int numDays) {
-        return this.webClient.get()
+        return this.activeAlertWebClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("open_api/api/alert")
+                        .path("alert")
                         .queryParam("alert_days", "{days}")
                         .build(numDays)
                 )
@@ -32,9 +37,9 @@ public class ActiveAlertClient {
     }
 
     public ActiveAlertResponse<Alert> getAlert(String alertId) {
-        return this.webClient.get()
+        return this.activeAlertWebClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("open_api/api/alerts/{alertId}")
+                        .path("alerts/{alertId}")
                         .build(alertId)
                 )
                 .accept(MediaType.APPLICATION_JSON)
@@ -44,9 +49,9 @@ public class ActiveAlertClient {
     }
 
     public ActiveAlertResponse<Device> getDevice(String deviceId) {
-        return this.webClient.get()
+        return this.activeAlertWebClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("open_api/api/devices/{deviceId}")
+                        .path("devices/{deviceId}")
                         .build(deviceId)
                 )
                 .accept(MediaType.APPLICATION_JSON)
@@ -56,8 +61,8 @@ public class ActiveAlertClient {
     }
 
     public RequestToken getAccessToken(String refreshToken) {
-        return this.webClient.post()
-                .uri("dev/api_access.php")
+        return this.activeAlertAuthWebClient.post()
+                .uri("api_access.php")
                 .body(BodyInserters.fromFormData("refresh_token", refreshToken))
                 .retrieve()
                 .bodyToMono(RequestToken.class)

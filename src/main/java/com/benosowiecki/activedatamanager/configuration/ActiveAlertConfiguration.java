@@ -11,10 +11,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class ActiveAlertConfiguration {
-    @Bean
+    @Bean("activeAlertWebClient")
     public WebClient activeAlertWebClient() {
         return WebClient.builder()
-                .baseUrl("https://console.active911.com/interface/")
+                .baseUrl("https://console.active911.com/interface/open_api/api/")
                 .exchangeStrategies(ExchangeStrategies.builder().codecs(this::acceptedCodecs).build())
 //                .clientConnector(new ReactorClientHttpConnector(HttpClient.create().wiretap(true)))
                 .build();
@@ -23,5 +23,13 @@ public class ActiveAlertConfiguration {
     private void acceptedCodecs(ClientCodecConfigurer clientCodecConfigurer) {
 //        clientCodecConfigurer.customCodecs().encoder(new Jackson2JsonEncoder(new ObjectMapper(), MediaType.TEXT_HTML));
         clientCodecConfigurer.customCodecs().decoder(new Jackson2JsonDecoder(new ObjectMapper(), MediaType.TEXT_HTML));
+    }
+
+    @Bean("activeAlertAuthWebClient")
+    public WebClient activeAlertAuthWebClient() {
+        return WebClient.builder()
+                .baseUrl("https://console.active911.com/interface/dev/")
+                .exchangeStrategies(ExchangeStrategies.builder().codecs(this::acceptedCodecs).build())
+                .build();
     }
 }
