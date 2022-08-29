@@ -20,16 +20,16 @@ public class ActiveAlertConfiguration {
                 .build();
     }
 
-    private void acceptedCodecs(ClientCodecConfigurer clientCodecConfigurer) {
-//        clientCodecConfigurer.customCodecs().encoder(new Jackson2JsonEncoder(new ObjectMapper(), MediaType.TEXT_HTML));
-        clientCodecConfigurer.customCodecs().decoder(new Jackson2JsonDecoder(new ObjectMapper(), MediaType.TEXT_HTML));
-    }
-
     @Bean("activeAlertAuthWebClient")
     public WebClient activeAlertAuthWebClient() {
         return WebClient.builder()
                 .baseUrl("https://console.active911.com/interface/dev/")
                 .exchangeStrategies(ExchangeStrategies.builder().codecs(this::acceptedCodecs).build())
                 .build();
+    }
+
+    private void acceptedCodecs(ClientCodecConfigurer clientCodecConfigurer) {
+//        clientCodecConfigurer.customCodecs().encoder(new Jackson2JsonEncoder(new ObjectMapper(), MediaType.TEXT_HTML));
+        clientCodecConfigurer.customCodecs().decoder(new Jackson2JsonDecoder(new ObjectMapper(), MediaType.TEXT_HTML));
     }
 }
