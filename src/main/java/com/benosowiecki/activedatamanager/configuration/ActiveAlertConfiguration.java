@@ -1,5 +1,6 @@
 package com.benosowiecki.activedatamanager.configuration;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,9 @@ public class ActiveAlertConfiguration {
     }
 
     private void acceptedCodecs(ClientCodecConfigurer clientCodecConfigurer) {
-//        clientCodecConfigurer.customCodecs().encoder(new Jackson2JsonEncoder(new ObjectMapper(), MediaType.TEXT_HTML));
-        clientCodecConfigurer.customCodecs().decoder(new Jackson2JsonDecoder(new ObjectMapper(), MediaType.TEXT_HTML));
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+
+        clientCodecConfigurer.customCodecs().decoder(new Jackson2JsonDecoder(objectMapper, MediaType.TEXT_HTML));
     }
 }
